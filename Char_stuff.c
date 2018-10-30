@@ -1,50 +1,59 @@
 #include<stdio.h>
 #include<conio.h>
-#include<string.h>
+#define DLE 16
+#define STX 2
+#define ETX 3
 void main()
 {
-	{
-		char ch, arr[50] = { "01111110" }, rec[50];
-		int i, j, k, len = 8, cnt = 0;
-		printf("\n enter the data:\n");
-		while ((ch = _getche()) != '\r')
-		{
+char ch,arr[50]={DLE,STX},rec[50];
+int len=2,i,j;
+//clrscr();
+printf("enter the data stream:ctrl+p->DLE ctrl+b->STX ctrl+c->ETX \n");
+while((ch=getch())!='\r')
+{
+if(ch==DLE)
+{
+arr[len++]=DLE;
+printf("DLE");
+}
 
-			if (ch == '1')
-				cnt++;
-			else
-				cnt = 0;
-			arr[len++] = ch;
-			if (cnt == 5)
-			{
-				arr[len++] = '0';
-				cnt = 0;
-			}
-		}
-		strcat(arr, "01111110");
-		printf("\n bit stuffed stream is:\n ");
-		for (i = 0; i<len + 8; i++)
-			printf("%c", arr[i]);
-		//destuffing
-		cnt = 0;
-		printf("\n the destuffed stream is: \n");
-		for (j = 8, k = 0; j<len; j++)
-		{
-			if (arr[j] == '1')
-				cnt++;
-			else
-				cnt = 0;
-			rec[k++] = arr[j];
-			if (cnt == 5 && arr[j + 1] == '0')
-			{
-				j++;
-				cnt = 0;
-			}
-		}
-		for (j = 0; j<k; j++)
-			printf("%c", rec[j]);
+else if(ch==STX)
+printf("STX");
+else if(ch==ETX)
+printf("ETX");
+else printf("%c",ch);
+arr[len++]=ch;
+}
+arr[len++]=DLE;
+arr[len++]=ETX;
+printf("\n the stuffed stream is:\n");
+for(i=0;i<len;i++)
+{
+ch=arr[i];
+if(ch==DLE)
+printf("DLE");
+else if(ch==STX)
+printf("STX");
+else if(ch==ETX)
+printf("ETX");
+else printf("%c",ch);
+}
+//destuffing
+printf("\n the destuffed data dtream is:\n");
+for(j=2;j<len-2;j++)
+{
+ch=arr[j];
+if(ch==DLE)
+{
+printf("DLE");
+j++;
 
-	}
-
-	_getch();
+}
+else if(ch==STX)
+printf("STX");
+else if(ch==ETX)
+printf("ETX");
+else printf("%c",ch);
+}
+getch();
 }
